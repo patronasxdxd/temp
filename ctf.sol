@@ -11,6 +11,7 @@ contract ProposalA is IProposal {
     uint256 value = 100;
 
     function denied() external override {
+        require(msg.sender == governance, "Only governance can call this");
         selfdestruct(payable(address(0)));
     }
 
