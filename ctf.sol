@@ -3,14 +3,14 @@ pragma solidity ^0.8.17;
 
 interface IProposal {
     function executeProposal(address governance) external;
-    function denied() external;
+    function denied(address governance) external;
 }
 
 contract ProposalA is IProposal {
 
     uint256 value = 100;
 
-    function denied() external override {
+    function denied(address governance) external override {
         require(msg.sender == governance, "Only governance can call this");
         selfdestruct(payable(address(0)));
     }
@@ -46,7 +46,7 @@ contract Governance {
 
     function denyProposal(address proposalAddress) external onlyOwner {
         IProposal proposedContract = IProposal(proposalAddress);
-        proposedContract.denied();
+        proposedContract.denied(address(this));
     }
 
     function executeProposal(address proposalAddress) external {
